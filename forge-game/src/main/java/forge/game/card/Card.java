@@ -4679,7 +4679,8 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
             this.bonusFromCounters = bonusFromCounters;
         }
         public int getTotal() {
-            return currentValue + tempBoost + bonusFromCounters;
+            long temp = (long)currentValue + (long)tempBoost + (long)bonusFromCounters;
+            return (int)Math.min(temp, Integer.MAX_VALUE);
         }
         @Override
         public String toString() {
