@@ -399,7 +399,7 @@ public class AbilityUtils {
     }
     public static int calculateAmount(final Card card, String amount, CardTraitBase ability, boolean maxto) {
         // return empty strings and constants
-        if (StringUtils.isBlank(amount)) { return 0; }
+        if (StringUtils.isBlank(amount) || Set.of("Double", "Triple", "Result").contains(amount)) { return 0; }
         if (card == null) { return 0; }
 
         Player player = null;
@@ -451,6 +451,7 @@ public class AbilityUtils {
             System.err.printf("SVar '%s' not defined in Card (%s)%n", amount, card.getName());
             return 0;
         }
+        if (amount.equals("Double") || amount.equals("Triple")) System.out.println("Double/Triple SVar is " + svarval);
 
         // Handle numeric constant coming in svar value
         if (StringUtils.isNumeric(svarval)) {
