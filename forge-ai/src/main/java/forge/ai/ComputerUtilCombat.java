@@ -54,9 +54,7 @@ import java.util.Map;
 
 
 /**
- * <p>
- * ComputerCombatUtil class.
- * </p>
+ * ComputerCombatUtil class with static methods.
  *
  * @author Forge
  * @version $Id: ComputerUtil.java 19179 2013-01-25 18:48:29Z Max mtg  $
@@ -64,12 +62,9 @@ import java.util.Map;
 public class ComputerUtilCombat {
 
     /**
-     * <p>
-     * canAttackNextTurn.
-     * </p>
+     * Checks if attacker can attack next turn.
      *
-     * @param attacker
-     *            a {@link forge.game.card.Card} object.
+     * @param attacker a {@link forge.game.card.Card} object.
      * @return a boolean.
      */
     public static boolean canAttackNextTurn(final Card attacker) {
@@ -78,10 +73,8 @@ public class ComputerUtilCombat {
     }
 
     /**
-     * <p>
-     * canAttackNextTurn.
-     * </p>
-     *
+     * Checks if attacker can attack defender next turn.
+     * 
      * @param attacker
      *            a {@link forge.game.card.Card} object.
      * @param defender
@@ -117,15 +110,11 @@ public class ComputerUtilCombat {
     }
 
     /**
-     * <p>
-     * getTotalFirstStrikeBlockPower.
-     * </p>
+     * Gets total first strike block power.
      *
-     * @param attacker
-     *            a {@link forge.game.card.Card} object.
-     * @param player
-     *            a {@link forge.game.player.Player} object.
-     * @return a int.
+     * @param attacker {@link forge.game.card.Card} object.
+     * @param player {@link forge.game.player.Player} object.
+     * @return int.
      */
     public static int getTotalFirstStrikeBlockPower(final Card attacker, final Player player) {
         List<Card> list = player.getCreaturesInPlay();
@@ -134,15 +123,11 @@ public class ComputerUtilCombat {
         return totalFirstStrikeDamageOfBlockers(attacker, list);
     }
 
-    // This function takes Doran and Double Strike into account
     /**
-     * <p>
-     * getAttack.
-     * </p>
+     * Returns combat damage, taking into account Doran and Double Strike.
      *
-     * @param c
-     *            a {@link forge.game.card.Card} object.
-     * @return a int.
+     * @param c {@link forge.game.card.Card} object.
+     * @return int net combat damage
      */
     public static int getAttack(final Card c) {
         int n = c.getNetCombatDamage();
@@ -154,11 +139,8 @@ public class ComputerUtilCombat {
         return n;
     }
 
-    // Returns the damage an unblocked attacker would deal
     /**
-     * <p>
-     * damageIfUnblocked.
-     * </p>
+     * Returns the damage an unblocked attacker would deal.
      *
      * @param attacker
      *            a {@link forge.game.card.Card} object.
@@ -166,7 +148,8 @@ public class ComputerUtilCombat {
      *            a {@link forge.game.player.Player} object.
      * @param combat
      *            a {@link forge.game.combat.Combat} object.
-     * @return a int.
+     * @param withoutAbilities
+     * @return int sum of damage
      */
     public static int damageIfUnblocked(final Card attacker, final GameEntity attacked, final Combat combat, boolean withoutAbilities) {
         int damage = attacker.getNetCombatDamage();
@@ -190,17 +173,14 @@ public class ComputerUtilCombat {
         return sum;
     }
 
-    // Returns the poison an unblocked attacker would deal
     /**
-     * <p>
-     * poisonIfUnblocked.
-     * </p>
+     * Returns the poison an unblocked attacker would deal.
      *
      * @param attacker
      *            a {@link forge.game.card.Card} object.
      * @param attacked
      *            a {@link forge.game.player.Player} object.
-     * @return a int.
+     * @return int poison
      */
     public static int poisonIfUnblocked(final Card attacker, final Player attacked) {
         if (!attacked.canReceiveCounters(CounterEnumType.POISON)) {
@@ -225,16 +205,13 @@ public class ComputerUtilCombat {
         return poison;
     }
 
-    // Returns the damage unblocked attackers would deal
     /**
-     * <p>
-     * sumDamageIfUnblocked.
-     * </p>
+     * Returns the damage unblocked attackers would deal.
      *
      * @param attackers
      * @param attacked
      *            a {@link forge.game.player.Player} object.
-     * @return a int.
+     * @return int sum of damage
      */
     public static int sumDamageIfUnblocked(final Iterable<Card> attackers, final Player attacked) {
         return sumDamageIfUnblocked(attackers, attacked, false);
@@ -251,16 +228,13 @@ public class ComputerUtilCombat {
         return sum;
     }
 
-    // Returns the number of poison counters unblocked attackers would deal
     /**
-     * <p>
-     * sumPoisonIfUnblocked.
-     * </p>
+     * Returns the number of poison counters unblocked attackers would deal.
      *
      * @param attackers
      * @param attacked
      *            a {@link forge.game.player.Player} object.
-     * @return a int.
+     * @return int sum poison
      */
     public static int sumPoisonIfUnblocked(final List<Card> attackers, final Player attacked) {
         int sum = 0;
@@ -270,12 +244,9 @@ public class ComputerUtilCombat {
         return sum;
     }
 
-    // Checks if the life of the attacked Player would be reduced
     /**
-     * <p>
-     * wouldLoseLife.
-     * </p>
-     *
+     * Checks if the life of the attacked Player would be reduced.
+     * @param ai Player
      * @param combat
      *            a {@link forge.game.combat.Combat} object.
      * @return a boolean.
@@ -284,15 +255,12 @@ public class ComputerUtilCombat {
         return lifeThatWouldRemain(ai, combat) < ai.getLife();
     }
 
-    // calculates the amount of life that will remain after the attack
     /**
-     * <p>
-     * lifeThatWouldRemain.
-     * </p>
-     *
+     * Calculates the amount of life that will remain after the attack.
+     * @param ai Player
      * @param combat
      *            a {@link forge.game.combat.Combat} object.
-     * @return a int.
+     * @return int remaining life
      */
     public static int lifeThatWouldRemain(final Player ai, final Combat combat) {
         int damage = 0;
@@ -321,15 +289,12 @@ public class ComputerUtilCombat {
         return ai.getLife() - damage;
     }
 
-    // calculates the amount of poison counters after the attack
     /**
-     * <p>
-     * resultingPoison.
-     * </p>
-     *
+     * Calculates the amount of poison counters after the attack.
+     * @param ai Player
      * @param combat
      *            a {@link forge.game.combat.Combat} object.
-     * @return a int.
+     * @return int number of poison counters on ai
      */
     public static int resultingPoison(final Player ai, final Combat combat) {
         // ai can't get poison counters, so the value can't change
@@ -378,13 +343,10 @@ public class ComputerUtilCombat {
     }
 
     /**
-     * <p>
-     * lifeInDanger.
-     * </p>
-     *
-     * @param combat
-     *            a {@link forge.game.combat.Combat} object.
-     * @return boolean true if life/poison changes and will be in dangerous range as specified by AI profile.
+     * Check if life/poison changes and will be in dangerous range as specified by AI profile.
+     * @param ai Player
+     * @param combat {@link forge.game.combat.Combat} object
+     * @return boolean
      */
     public static boolean lifeInDanger(final Player ai, final Combat combat) {
         return lifeInDanger(ai, combat, 0);
@@ -454,9 +416,7 @@ public class ComputerUtilCombat {
     }
 
     /**
-     * <p>
-     * lifeInSeriousDanger.
-     * </p>
+     * Checks if player would lose.
      *
      * @param combat
      *            a {@link forge.game.combat.Combat} object.
@@ -496,17 +456,12 @@ public class ComputerUtilCombat {
         return !ai.cantLoseForZeroOrLessLife() && lifeThatWouldRemain(ai, combat) - payment < 1;
     }
 
-    // This calculates the amount of damage a blockgang can deal to the attacker
-    // (first strike not supported)
     /**
-     * <p>
-     * totalDamageOfBlockers.
-     * </p>
-     *
-     * @param attacker
-     *            a {@link forge.game.card.Card} object.
+     * Calculates the amount of damage a blockgang can deal to the attacker
+     * (first strike not supported)
+     * @param attacker {@link forge.game.card.Card} object.
      * @param defenders
-     * @return a int.
+     * @return int damage
      */
     public static int totalDamageOfBlockers(final Card attacker, final List<Card> defenders) {
         int damage = 0;
@@ -539,17 +494,14 @@ public class ComputerUtilCombat {
         return damage;
     }
 
-    // This calculates the amount of damage a blocker in a blockgang can deal to the attacker
     /**
-     * <p>
-     * dealsDamageAsBlocker.
-     * </p>
+     * Calculates the amount of damage a blocker in a blockgang can deal to the attacker.
      *
      * @param attacker
      *            a {@link forge.game.card.Card} object.
      * @param defender
      *            a {@link forge.game.card.Card} object.
-     * @return a int.
+     * @return int damage
      */
     public static int dealsDamageAsBlocker(final Card attacker, final Card defender) {
         int defenderDamage = predictDamageByBlockerWithoutDoubleStrike(attacker, defender);
@@ -565,7 +517,7 @@ public class ComputerUtilCombat {
      * Predicts the damage to an attacker by a defending creature without double-strike.
      * @param attacker
      * @param defender
-     * @return
+     * @return int damage
      */
     private static int predictDamageByBlockerWithoutDoubleStrike(final Card attacker, final Card defender) {
         if (attacker.getName().equals("Sylvan Basilisk") && !defender.hasKeyword(Keyword.INDESTRUCTIBLE)) {
@@ -593,7 +545,7 @@ public class ComputerUtilCombat {
         if (defender.toughnessAssignsDamage()) {
             defenderDamage = defender.getNetToughness() + predictToughnessBonusOfBlocker(attacker, defender, true);
         } else {
-        	defenderDamage = defender.getNetPower() + predictPowerBonusOfBlocker(attacker, defender, true);
+            defenderDamage = defender.getNetPower() + predictPowerBonusOfBlocker(attacker, defender, true);
         }
 
         // consider static Damage Prevention
@@ -601,17 +553,12 @@ public class ComputerUtilCombat {
         return defenderDamage;
     }
 
-    // This calculates the amount of damage a blocker in a blockgang can take
-    // from the attacker (for trampling attackers)
     /**
-     * <p>
-     * totalShieldDamage.
-     * </p>
-     *
-     * @param attacker
-     *            a {@link forge.game.card.Card} object.
+     * Calculates the amount of damage a blockgang can take
+     * from the attacker (for trampling attackers).
+     * @param attacker a {@link forge.game.card.Card} object.
      * @param defenders
-     * @return a int.
+     * @return int damage
      */
     public static int totalShieldDamage(final Card attacker, final List<Card> defenders) {
         int defenderDefense = 0;
@@ -623,22 +570,17 @@ public class ComputerUtilCombat {
         return defenderDefense;
     }
 
-    // This calculates the amount of damage a blocker in a blockgang can take
-    // from the attacker (for trampling attackers)
     /**
-     * <p>
-     * shieldDamage.
-     * </p>
+     * Calculates the amount of damage a blocker can take
+     * from the attacker (for trampling attackers).
      *
-     * @param attacker
-     *            a {@link forge.game.card.Card} object.
-     * @param blocker
-     *            a {@link forge.game.card.Card} object.
-     * @return a int.
+     * @param attacker a {@link forge.game.card.Card} object.
+     * @param blocker a {@link forge.game.card.Card} object.
+     * @return int damage
      */
     public static int shieldDamage(final Card attacker, final Card blocker) {
         if (canDestroyBlockerBeforeFirstStrike(blocker, attacker, false)) {
-        	return 0;
+            return 0;
         }
 
         int flankingMagnitude = 0;
@@ -661,16 +603,13 @@ public class ComputerUtilCombat {
         return defenderDefense;
     }
 
-    // For AI safety measures like Regeneration
     /**
-     * <p>
-     * combatantWouldBeDestroyed.
-     * </p>
-     * @param ai
-     *
+     * Check whether combatant would be destroyed.
+     * For AI safety measures like Regeneration.
+     * @param ai Player
      * @param combatant
      *            a {@link forge.game.card.Card} object.
-     * @return a boolean.
+     * @return boolean
      */
     public static boolean combatantWouldBeDestroyed(Player ai, final Card combatant, Combat combat) {
         if (combat.isAttacking(combatant)) {
@@ -682,16 +621,13 @@ public class ComputerUtilCombat {
         return false;
     }
 
-    // For AI safety measures like Regeneration
     /**
-     * <p>
-     * attackerWouldBeDestroyed.
-     * </p>
-     * @param ai
-     *
+     * Check whether attacker would be destroyed.
+     * For AI safety measures like Regeneration.
+     * @param ai Player
      * @param attacker
      *            a {@link forge.game.card.Card} object.
-     * @return a boolean.
+     * @return boolean
      */
     public static boolean attackerWouldBeDestroyed(Player ai, final Card attacker, Combat combat) {
         final List<Card> blockers = combat.getBlockers(attacker);
@@ -715,9 +651,7 @@ public class ComputerUtilCombat {
     }
 
     /**
-     * <p>
-     * combatTriggerWillTrigger.
-     * </p>
+     * Checks if a combat trigger will trigger.
      *
      * @param attacker
      *            a {@link forge.game.card.Card} object.
@@ -852,18 +786,15 @@ public class ComputerUtilCombat {
         return willTrigger;
     }
 
-    // Predict the Power bonus of the blocker if blocking the attacker
-    // (Flanking, Bushido and other triggered abilities)
     /**
-     * <p>
-     * predictPowerBonusOfBlocker.
-     * </p>
+     * Predicts the Power bonus of the blocker if blocking the attacker.
+     * (Flanking, Bushido and other triggered abilities)
      *
      * @param attacker
      *            a {@link forge.game.card.Card} object.
      * @param blocker
      *            a {@link forge.game.card.Card} object.
-     * @return a int.
+     * @return int power bonus
      */
     public static int predictPowerBonusOfBlocker(final Card attacker, final Card blocker, boolean withoutAbilities) {
         int power = 0;
@@ -993,18 +924,14 @@ public class ComputerUtilCombat {
         return power;
     }
 
-    // Predict the Toughness bonus of the blocker if blocking the attacker
-    // (Flanking, Bushido and other triggered abilities)
     /**
-     * <p>
-     * predictToughnessBonusOfBlocker.
-     * </p>
-     *
+     * Predicts the Toughness bonus of the blocker if blocking the attacker.
+     * (Flanking, Bushido and other triggered abilities)
      * @param attacker
      *            a {@link forge.game.card.Card} object.
      * @param blocker
      *            a {@link forge.game.card.Card} object.
-     * @return a int.
+     * @return int toughness bonus
      */
     public static int predictToughnessBonusOfBlocker(final Card attacker, final Card blocker, boolean withoutAbilities) {
         int toughness = 0;
@@ -1120,20 +1047,17 @@ public class ComputerUtilCombat {
         return toughness;
     }
 
-    // Predict the Power bonus of the blocker if blocking the attacker
-    // (Flanking, Bushido and other triggered abilities)
     /**
-     * <p>
-     * predictPowerBonusOfAttacker.
-     * </p>
-     *
+     * Predicts the Power bonus of the attacker if blocked by the blocker.
+     * (Flanking, Bushido and other triggered abilities)
      * @param attacker
      *            a {@link forge.game.card.Card} object.
      * @param blocker
      *            a {@link forge.game.card.Card} object.
      * @param combat
      *            a {@link forge.game.combat.Combat} object.
-     * @return a int.
+     * @param withoutAbilities
+     * @return int power bonus
      */
     public static int predictPowerBonusOfAttacker(final Card attacker, final Card blocker, final Combat combat, boolean withoutAbilities) {
         return predictPowerBonusOfAttacker(attacker, blocker, combat, withoutAbilities, false);
@@ -1266,7 +1190,6 @@ public class ComputerUtilCombat {
                     bonus = TextUtil.fastReplace(bonus, "TriggeredAttacker$CardToughness", TextUtil.concatNoSpace("Number$", String.valueOf(attacker.getNetToughness())));
                 }
                 power += AbilityUtils.calculateAmount(source, bonus, sa);
-
             }
         }
         if (withoutAbilities) {
@@ -1321,20 +1244,17 @@ public class ComputerUtilCombat {
         return power;
     }
 
-    // Predict the Toughness bonus of the attacker if blocked by the blocker
-    // (Flanking, Bushido and other triggered abilities)
     /**
-     * <p>
-     * predictToughnessBonusOfAttacker.
-     * </p>
-     *
+     * Predicts the Toughness bonus of the attacker if blocked by the blocker.
+     * (Flanking, Bushido and other triggered abilities)
      * @param attacker
      *            a {@link forge.game.card.Card} object.
      * @param blocker
      *            a {@link forge.game.card.Card} object.
      * @param combat
      *            a {@link forge.game.combat.Combat} object.
-     * @return a int.
+     * @param withoutAbilities
+     * @return int toughness bonus
      */
     public static int predictToughnessBonusOfAttacker(final Card attacker, final Card blocker, final Combat combat
             , boolean withoutAbilities) {
@@ -1542,11 +1462,13 @@ public class ComputerUtilCombat {
         return toughness;
     }
 
-    // check whether the attacker will be destroyed by triggered abilities before First Strike damage
+    /**
+     * Checks whether the attacker will be destroyed by triggered abilities before First Strike damage.
+     */
     public static boolean canDestroyAttackerBeforeFirstStrike(final Card attacker, final Card blocker, final Combat combat,
             final boolean withoutAbilities) {
         if (blocker.isEquippedBy("Godsend")) {
-           return true;
+            return true;
         }
         if (combatantCantBeDestroyed(attacker.getController(), attacker)) {
             return false;
@@ -1591,16 +1513,12 @@ public class ComputerUtilCombat {
         return false;
     }
 
-    // can the combatant be potentially destroyed or is it potentially indestructible?
     /**
-     * <p>
-     * attackerCantBeDestroyedNow.
-     * </p>
+     * Checks if combatant be destroyed.
      * @param ai
-     *
      * @param combatant
      *            a {@link forge.game.card.Card} object.
-     * @return a boolean.
+     * @return boolean
      */
     public static boolean combatantCantBeDestroyed(final Player ai, final Card combatant) {
         if (combatant.getCounters(CounterEnumType.SHIELD) > 0) {
@@ -1620,13 +1538,9 @@ public class ComputerUtilCombat {
         return false;
     }
 
-    // can the blocker destroy the attacker?
     /**
-     * <p>
-     * canDestroyAttacker.
-     * </p>
+     * Checks if attacker be destroyed by blocker.
      * @param ai
-     *
      * @param attacker
      *            a {@link forge.game.card.Card} object.
      * @param blocker
@@ -1648,13 +1562,13 @@ public class ComputerUtilCombat {
             attacker = canTransform(attacker);
             blocker = canTransform(blocker);
         }
-    	if (canDestroyAttackerBeforeFirstStrike(attacker, blocker, combat, withoutAbilities)) {
-    		return true;
-    	}
+        if (canDestroyAttackerBeforeFirstStrike(attacker, blocker, combat, withoutAbilities)) {
+            return true;
+        }
 
-    	if (canDestroyBlockerBeforeFirstStrike(blocker, attacker, withoutAbilities)) {
-    		return false;
-    	}
+        if (canDestroyBlockerBeforeFirstStrike(blocker, attacker, withoutAbilities)) {
+            return false;
+        }
 
         int flankingMagnitude = 0;
         if (attacker.hasKeyword(Keyword.FLANKING) && !blocker.hasKeyword(Keyword.FLANKING)) {
@@ -1683,7 +1597,7 @@ public class ComputerUtilCombat {
             defenderDamage = blocker.getNetToughness()
                     + predictToughnessBonusOfBlocker(attacker, blocker, withoutAbilities);
         } else {
-        	defenderDamage = blocker.getNetPower()
+            defenderDamage = blocker.getNetPower()
                     + predictPowerBonusOfBlocker(attacker, blocker, withoutAbilities);
         }
 
@@ -1762,13 +1676,11 @@ public class ComputerUtilCombat {
 
     // For AI safety measures like Regeneration
     /**
-     * <p>
-     * blockerWouldBeDestroyed.
-     * </p>
+     * Checks if blocker would be destroyed by combat.
      * @param ai
-     *
      * @param blocker
      *            a {@link forge.game.card.Card} object.
+     * @param combat
      * @return a boolean.
      */
     public static boolean blockerWouldBeDestroyed(Player ai, final Card blocker, Combat combat) {
@@ -1785,12 +1697,12 @@ public class ComputerUtilCombat {
     }
 
     public static boolean canDestroyBlockerBeforeFirstStrike(final Card blocker, final Card attacker, final boolean withoutAbilities) {
-    	if (attacker.isEquippedBy("Godsend")) {
+        if (attacker.isEquippedBy("Godsend")) {
             return true;
         }
 
         if (attacker.getName().equals("Elven Warhounds")) {
-        	return true;
+            return true;
         }
 
         int flankingMagnitude = 0;
@@ -1811,8 +1723,8 @@ public class ComputerUtilCombat {
         }
 
         if (getDamageToKill(blocker, false)
-        		+ predictToughnessBonusOfBlocker(attacker, blocker, withoutAbilities) <= 0) {
-        	return true;
+                + predictToughnessBonusOfBlocker(attacker, blocker, withoutAbilities) <= 0) {
+            return true;
         }
 
         final Game game = blocker.getGame();
@@ -1847,16 +1759,12 @@ public class ComputerUtilCombat {
             }
         }
 
-    	return false;
+        return false;
     }
 
-    // can the attacker destroy this blocker?
     /**
-     * <p>
-     * canDestroyBlocker.
-     * </p>
+     * Checks if attacker can destroy blocker.
      * @param ai
-     *
      * @param blocker
      *            a {@link forge.game.card.Card} object.
      * @param attacker
@@ -1878,9 +1786,9 @@ public class ComputerUtilCombat {
             attacker = canTransform(attacker);
             blocker = canTransform(blocker);
         }
-    	if (canDestroyBlockerBeforeFirstStrike(blocker, attacker, withoutAbilities)) {
-    		return true;
-    	}
+        if (canDestroyBlockerBeforeFirstStrike(blocker, attacker, withoutAbilities)) {
+            return true;
+        }
 
         if (((blocker.hasKeyword(Keyword.INDESTRUCTIBLE) || (!withoutAbilities && ComputerUtil.canRegenerate(ai, blocker)))
                 && !attacker.isWitherDamage())
@@ -1891,9 +1799,9 @@ public class ComputerUtilCombat {
             return false;
         }
 
-    	if (canDestroyAttackerBeforeFirstStrike(attacker, blocker, combat, withoutAbilities)) {
-    		return false;
-    	}
+        if (canDestroyAttackerBeforeFirstStrike(attacker, blocker, combat, withoutAbilities)) {
+            return false;
+        }
 
         int defenderDamage;
         int attackerDamage;
@@ -1901,14 +1809,14 @@ public class ComputerUtilCombat {
             defenderDamage = blocker.getNetToughness()
                     + predictToughnessBonusOfBlocker(attacker, blocker, withoutAbilities);
         } else {
-        	defenderDamage = blocker.getNetPower()
+            defenderDamage = blocker.getNetPower()
                     + predictPowerBonusOfBlocker(attacker, blocker, withoutAbilities);
         }
         if (attacker.toughnessAssignsDamage()) {
             attackerDamage = attacker.getNetToughness()
                     + predictToughnessBonusOfAttacker(attacker, blocker, combat, withoutAbilities, withoutAttackerStaticAbilities);
         } else {
-        	attackerDamage = attacker.getNetPower()
+            attackerDamage = attacker.getNetPower()
                     + predictPowerBonusOfAttacker(attacker, blocker, combat, withoutAbilities, withoutAttackerStaticAbilities);
         }
 
@@ -1967,9 +1875,8 @@ public class ComputerUtilCombat {
                 return true;
             }
         } // attacker double strike
-
         else { // no double strike for attacker
-               // Defender may kill the attacker before he can deal any damage
+            // Defender may kill the attacker before he can deal any damage
             if (dealsFirstStrikeDamage(blocker, withoutAbilities, combat)
                     && !attacker.hasKeyword(Keyword.INDESTRUCTIBLE)
                     && !dealsFirstStrikeDamage(attacker, withoutAbilities, combat)) {
@@ -1989,19 +1896,17 @@ public class ComputerUtilCombat {
             return attackerDamage >= defenderLife;
 
         } // attacker no double strike
-        return false;// should never arrive here
+        return false; // should never arrive here
     }
 
     /**
-     * <p>
-     * distributeAIDamage.
-     * </p>
-     *
+     * Distributed AI damage.
      * @param self
      *            a {@link forge.game.player.Player} object.
      * @param combatant
      *            a {@link forge.game.card.Card} object.
      * @param opposedCombatants
+     * @param remaining
      * @param dmgCanDeal
      *            a int.
      * @param defender
@@ -2111,38 +2016,26 @@ public class ComputerUtilCombat {
         return damageMap;
     }
 
-    // how much damage is enough to kill the creature (for AI)
     /**
-     * <p>
-     * getEnoughDamageToKill.
-     * </p>
-     *
-     * @param maxDamage
-     *            a int.
-     * @param source
-     *            a {@link forge.game.card.Card} object.
-     * @param isCombat
-     *            a boolean.
-     * @return a int.
+     * Gets damage needed to kill card.
+     * @param c Card
+     * @param maxDamage int
+     * @param source {@link forge.game.card.Card} object.
+     * @param isCombat boolean.
+     * @return int damage
      */
     public final static int getEnoughDamageToKill(final Card c, final int maxDamage, final Card source, final boolean isCombat) {
         return getEnoughDamageToKill(c, maxDamage, source, isCombat, false);
     }
 
     /**
-     * <p>
-     * getEnoughDamageToKill.
-     * </p>
-     *
-     * @param maxDamage
-     *            a int.
-     * @param source
-     *            a {@link forge.game.card.Card} object.
-     * @param isCombat
-     *            a boolean.
-     * @param noPrevention
-     *            a boolean.
-     * @return a int.
+     * Gets damage needed to kill card.
+     * @param c Card
+     * @param maxDamage int
+     * @param source {@link forge.game.card.Card} object
+     * @param isCombat boolean
+     * @param noPrevention boolean
+     * @return int damage
      */
     public static final int getEnoughDamageToKill(final Card c, final int maxDamage, final Card source, final boolean isCombat, final boolean noPrevention) {
         int killDamage = getDamageToKill(c, false);
@@ -2170,13 +2063,9 @@ public class ComputerUtilCombat {
         return maxDamage + 1;
     }
 
-    // the amount of damage needed to kill the creature (for AI)
     /**
-     * <p>
-     * getKillDamage.
-     * </p>
-     *
-     * @return a int.
+     * Gets damage needed to kill card.
+     * @return int amount of damage needed to kill the creature (for AI)
      */
     public final static int getDamageToKill(final Card c, boolean withShields) {
         int damageShield = withShields ? c.getPreventNextDamageTotalShields() : 0;
@@ -2191,38 +2080,25 @@ public class ComputerUtilCombat {
     }
 
     /**
-     * <p>
-     * predictDamage.
-     * </p>
-     *
-     * @param damage
-     *            a int.
-     * @param source
-     *            a {@link forge.game.card.Card} object.
-     * @param isCombat
-     *            a boolean.
-     * @return a int.
+     * Predicts damage to target.
+     * @param target
+     * @param damage int.
+     * @param source {@link forge.game.card.Card} object.
+     * @param isCombat boolean.
+     * @return int damage.
      */
     public final static int predictDamageTo(final GameEntity target, final int damage, final Card source, final boolean isCombat) {
         return predictDamageTo(target, damage, 0, source, isCombat);
     }
 
-    // This function helps the AI calculate the actual amount of damage an
-    // effect would deal
     /**
-     * <p>
-     * predictDamage.
-     * </p>
-     *
-     * @param damage
-     *            a int.
-     * @param possiblePrevention
-     *            a int.
-     * @param source
-     *            a {@link forge.game.card.Card} object.
-     * @param isCombat
-     *            a boolean.
-     * @return a int.
+     * Predicts damage to target.
+     * @param target
+     * @param damage int.
+     * @param possiblePrevention int.
+     * @param source {@link forge.game.card.Card} object.
+     * @param isCombat boolean.
+     * @return int damage an effect would deal.
      */
     public final static int predictDamageTo(final GameEntity target, final int damage, final int possiblePrevention, final Card source, final boolean isCombat) {
         int restDamage = damage;
@@ -2264,48 +2140,48 @@ public class ComputerUtilCombat {
     }
 
     public final static boolean canGainKeyword(final Card combatant, final List<String> keywords, final Combat combat) {
-    	final Player controller = combatant.getController();
-    	for (Card c : controller.getCardsIn(ZoneType.Battlefield)) {
-	    	for (SpellAbility ability : c.getAllSpellAbilities()) {
-	            if (!ability.isActivatedAbility()) {
-	                continue;
-	            }
-	            if (ability.getApi() != ApiType.Pump) {
-	                continue;
-	            }
-	
-	            if (ability.hasParam("ActivationPhases") || ability.hasParam("SorcerySpeed")) {
-	                continue;
-	            }
-	
-	            if (!ability.hasParam("KW") || !ComputerUtilCost.canPayCost(ability, controller, false)) {
-	                continue;
-	            }
-	            if (c != combatant) {
-	            	if (!ability.usesTargeting() || !ability.canTarget(combatant)) {
-	            		continue;
-	            	}
-	            	//the AI will will fail to predict tapping of attackers
-	            	if (controller.getGame().getPhaseHandler().isPlayerTurn(controller)) {
-		            	if (combat == null || !combat.isAttacking(combatant) || combat.isAttacking(c)) {
-		            		continue;
-		            	}
-	            	}
+        final Player controller = combatant.getController();
+        for (Card c : controller.getCardsIn(ZoneType.Battlefield)) {
+            for (SpellAbility ability : c.getAllSpellAbilities()) {
+                if (!ability.isActivatedAbility()) {
+                    continue;
+                }
+                if (ability.getApi() != ApiType.Pump) {
+                    continue;
+                }
 
-	            }
-	            for (String keyword : keywords) {
-	            	if (ability.getParam("KW").contains(keyword)) {
-	            		return true;
-	            	}
-	            }
-	        }
-    	}
+                if (ability.hasParam("ActivationPhases") || ability.hasParam("SorcerySpeed")) {
+                    continue;
+                }
+
+                if (!ability.hasParam("KW") || !ComputerUtilCost.canPayCost(ability, controller, false)) {
+                    continue;
+                }
+                if (c != combatant) {
+                    if (!ability.usesTargeting() || !ability.canTarget(combatant)) {
+                        continue;
+                    }
+                    //the AI will will fail to predict tapping of attackers
+                    if (controller.getGame().getPhaseHandler().isPlayerTurn(controller)) {
+                        if (combat == null || !combat.isAttacking(combatant) || combat.isAttacking(c)) {
+                            continue;
+                        }
+                    }
+
+                }
+                for (String keyword : keywords) {
+                    if (ability.getParam("KW").contains(keyword)) {
+                        return true;
+                    }
+                }
+            }
+        }
 
         return false;
     }
 
     /**
-     * Transforms into alternate state if possible
+     * Transforms into alternate state if possible.
      * @param original original creature
      * @return transform creature if possible, original creature otherwise
      */
@@ -2475,9 +2351,11 @@ public class ComputerUtilCombat {
         return attackerAfterTrigs;
     }
 
+    /**
+     * Detects if the attacking or blocking group the card "c" belongs to will kill
+     * at least one creature it's in combat with (either profitably or as a trade).
+     */
     public static boolean willKillAtLeastOne(final Player ai, final Card c, final Combat combat) {
-        // This method detects if the attacking or blocking group the card "c" belongs to will kill
-        // at least one creature it's in combat with (either profitably or as a trade),
         if (combat == null) {
             return false;
         }

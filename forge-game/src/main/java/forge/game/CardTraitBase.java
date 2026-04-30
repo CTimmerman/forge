@@ -222,6 +222,7 @@ public abstract class CardTraitBase implements GameObject, IHasCardView, IHasSVa
 
     public boolean matchesValid(final Object o, final String[] valids, final Card srcCard, final Player srcPlayer) {
         if (o instanceof GameObject c) {
+            // FIXME: Exalted is valid on Ignoble Hierarch, but doesn't check here if it's valid for opponent's creature.
             return c.isValid(valids, srcPlayer, srcCard, this);
         } else if (o instanceof Iterable<?>) {
             for (Object o2 : (Iterable<?>)o) {
@@ -256,6 +257,7 @@ public abstract class CardTraitBase implements GameObject, IHasCardView, IHasSVa
         return matchesValid(o, valids, getHostCard());
     }
 
+    // FIXME Opponent's Ignoble Hierarch matches my Crimson Kobolds!
     public boolean matchesValidParam(String param, final Object o, final Card srcCard) {
         boolean result = hasParam("Invert" + param);
         if (hasParam(param) && !matchesValid(o, getParam(param).split(","), srcCard)) {

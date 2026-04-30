@@ -626,7 +626,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return currentStateName;
     }
 
-    // use by CopyPermanent
+    /** Used by CopyPermanent */
     public void setStates(Map<CardStateName, CardState> map) {
         states.clear();
         states.putAll(map);
@@ -1046,7 +1046,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return gamePieceType;
     }
 
-    // is this "Card" supposed to be a token?
+    /** Is this "Card" supposed to be a token? */
     public final boolean isToken() {
         if (isInPlay() && hasMergedCard()) {
             return getTopMergedCard().gamePieceType == GamePieceType.TOKEN;
@@ -1670,8 +1670,10 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         blockedByThisTurn.clear();
     }
 
-    //MustBlockCards are cards that this Card must block if able in an upcoming combat.
-    //This is cleared at the end of each turn.
+    /**
+     * MustBlockCards are cards that this Card must block if able in an upcoming combat.
+     * This is cleared at the end of each turn.
+     */
     public final CardCollectionView getMustBlockCards() {
         return CardCollection.getView(Iterables.concat(mustBlockCards.values()));
     }
@@ -2207,7 +2209,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         view.updateChosenType(this);
     }
 
-    // used by card Illusionary Terrain
+    /** Used by card Illusionary Terrain. */
     public final String getChosenType2() {
         return chosenType2;
     }
@@ -2369,7 +2371,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
             this.setSprocket(-1);
     }
 
-    // used for cards like Meddling Mage...
+    /** Used for cards like Meddling Mage... */
     public final String getNamedCard() {
         return hasNamedCard() ? Iterables.getLast(chosenName) : "";
     }
@@ -2412,8 +2414,10 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         text = originalText;
     }
 
-    // get the text that does not belong to a cards abilities (and is not really
-    // there rules-wise)
+    /**
+     * Gets the text that does not belong to a card's abilities (and is not really
+     * there rules-wise)
+     */
     public final String getNonAbilityText() {
         final StringBuilder sb = new StringBuilder();
         final StringBuilder sbLong = new StringBuilder();
@@ -2448,7 +2452,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return sb.toString();
     }
 
-    // convert a keyword list to the String that should be displayed in game
+    /** Converts a keyword list to the String that should be displayed in game. */
     private String keywordsToText(final Collection<KeywordInterface> keywords) {
         final StringBuilder sb = new StringBuilder();
         final StringBuilder sbLong = new StringBuilder();
@@ -2644,13 +2648,13 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
                     String desc = k.length > 2 ? k[2] : CardType.getPluralType(k[1]);
                     sbLong.append(k[0]).append(" ").append(desc).append(" (").append(inst.getReminderText()).append(")");
                 } else if (keyword.equals("Convoke") || keyword.equals("Dethrone") || keyword.equals("Fear")
-                         || keyword.equals("Melee") || keyword.equals("Improvise") || keyword.equals("Shroud")
-                         || keyword.equals("Banding") || keyword.equals("Intimidate") || keyword.equals("Evolve")
-                         || keyword.equals("Exalted") || keyword.equals("Extort") || keyword.equals("Flanking")
-                         || keyword.equals("Horsemanship") || keyword.equals("Infect") || keyword.equals("Persist")
-                         || keyword.equals("Phasing") || keyword.equals("Shadow") || keyword.equals("Skulk")
-                         || keyword.equals("Undying") || keyword.equals("Wither") || keyword.equals("Bargain")
-                         || keyword.equals("Mentor") || keyword.equals("Training")) {
+                        || keyword.equals("Melee") || keyword.equals("Improvise") || keyword.equals("Shroud")
+                        || keyword.equals("Banding") || keyword.equals("Intimidate") || keyword.equals("Evolve")
+                        || keyword.equals("Exalted") || keyword.equals("Extort") || keyword.equals("Flanking")
+                        || keyword.equals("Horsemanship") || keyword.equals("Infect") || keyword.equals("Persist")
+                        || keyword.equals("Phasing") || keyword.equals("Shadow") || keyword.equals("Skulk")
+                        || keyword.equals("Undying") || keyword.equals("Wither") || keyword.equals("Bargain")
+                        || keyword.equals("Mentor") || keyword.equals("Training")) {
                     if (sb.length() != 0) {
                         sb.append("\r\n");
                     }
@@ -2834,7 +2838,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return sbx.toString();
     }
 
-    // get the text of the abilities of a card
+    /** Gets the text of the abilities of a card. */
     public String getAbilityText() {
         return getAbilityText(currentState);
     }
@@ -3534,7 +3538,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return res;
     }
 
-    // shield = regeneration
+    /** shield = regeneration */
     public final int getShieldCount() {
         return shieldCount;
     }
@@ -4304,7 +4308,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         currentState.setBaseToughness(n);
     }
 
-    // values that are printed on card
+    /** values that are printed on card */
     public final String getBasePowerString() {
         return (null == currentState.getBasePowerString()) ? String.valueOf(getBasePower()) : currentState.getBasePowerString();
     }
@@ -4312,7 +4316,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return (null == currentState.getBaseToughnessString()) ? String.valueOf(getBaseToughness()) : currentState.getBaseToughnessString();
     }
 
-    // values that are printed on card
+    /** values that are printed on card */
     public final void setBasePowerString(final String s) {
         currentState.setBasePowerString(s);
     }
@@ -4593,12 +4597,12 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return StaticAbilityAssignNoCombatDamage.assignNoCombatDamage(this);
     }
 
-    // How much combat damage does the card deal
+    /** Returns combat damage the card would deal per strike. */
     public final int getNetCombatDamage() {
         return assignNoCombatDamage() ? 0 : (toughnessAssignsDamage() ? getNetToughnessBreakdown() : getNetPowerBreakdown()).getTotal();
     }
 
-    // for cards like Giant Growth, etc.
+    /** For cards like Giant Growth, etc. */
     public final int getTempPowerBoost() {
         int result = 0;
         for (Pair<Integer, Integer> pair : boostPT.values()) {
@@ -5778,7 +5782,9 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return false;
     }
 
-    // Takes one argument like Permanent.Blue+withFlying
+    /**
+     * @param restriction Takes one argument like "Permanent.Blue+withFlying".
+     */
     @Override
     public final boolean isValid(final String restriction, final Player sourceController, final Card source, CardTraitBase spellAbility) {
         // Inclusive restrictions are Card types
@@ -5845,7 +5851,9 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return !testFailed;
     }
 
-    // Takes arguments like Blue or withFlying
+    /**
+     * @param property Takes arguments like "Blue" or "withFlying".
+     */
     @Override
     public boolean hasProperty(final String property, final Player sourceController, final Card source, CardTraitBase spellAbility) {
         if (property.startsWith("!")) {
@@ -5927,10 +5935,10 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         // Split cards has extra logic to check if it does share a name with
         if (!shares && !hasNameOverwrite()) {
             if (isInPlay()) {
-               // split cards in play are only rooms
-               for (String door : getUnlockedRoomNames()) {
-                   shares |= name.equals(door);
-               }
+                // split cards in play are only rooms
+                for (String door : getUnlockedRoomNames()) {
+                    shares |= name.equals(door);
+                }
             } else { // not on the battlefield
                 if (hasState(CardStateName.LeftSplit)) {
                     shares |= name.equals(getState(CardStateName.LeftSplit).getName());
@@ -6053,7 +6061,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return getDamageHistory().getDamageDoneThisTurn(null, false, null, null, this, getController(), null);
     }
 
-    // this is the amount of damage a creature needs to receive before it dies
+    /** @return int amount of damage a creature needs to receive before it dies */
     public final int getLethal() {
         if (hasKeyword("Lethal damage dealt to CARDNAME is determined by its power rather than its toughness.")) {
             return getNetPower();
@@ -6061,7 +6069,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return getNetToughness();
     }
 
-    // this is the minimal damage a trampling creature has to assign to a blocker
+    /** @return int minimal damage a trampling creature has to assign to a blocker */
     public final int getLethalDamage() {
         // CR 702.2c
         for (Card c : getAssignedDamageMap().keySet()) {
@@ -6177,7 +6185,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return !StaticAbilityCantPreventDamage.cantPreventDamage(this, isCombat);
     }
 
-    // This is used by the AI to forecast an effect (so it must not change the game state)
+    /** This is used by the AI to forecast an effect (so it must not change the game state) */
     @Override
     public final int staticReplaceDamage(final int damage, final Card source, final boolean isCombat) {
         int restDamage = damage;
@@ -6221,7 +6229,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
                 }
             } else if (c.getName().equals("Benevolent Unicorn")) {
                 if (source.isSpell() && isCreature()) {
-                   restDamage -= 1;
+                    restDamage -= 1;
                 }
             } else if (c.getName().equals("Divine Presence")) {
                 if (restDamage > 3 && isCreature()) {
@@ -7143,7 +7151,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
     }
 
     public final boolean hasTrigger(final Trigger t) {
-       return currentState.hasTrigger(t);
+        return currentState.hasTrigger(t);
     }
     public final boolean hasTrigger(final int id) {
         return currentState.hasTrigger(id);
@@ -7621,13 +7629,13 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return fromPaperCard(pc, null);
     }
 
-    //safe way to get card for ui if card may be null
+    /** safe way to get card for ui if card may be null */
     public static Card getCardForUi(Card c) {
         if (c == null) { return null; }
         return c.getCardForUi();
     }
 
-    //allow special cards to override this function to return another card for the sake of UI logic
+    /** allow special cards to override this function to return another card for the sake of UI logic */
     public Card getCardForUi() {
         return this;
     }
@@ -7714,7 +7722,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         return view;
     }
 
-    // Counts number of instances of a given keyword.
+    /** Counts number of instances of a given keyword. */
     private static final class CountKeywordVisitor implements Visitor<KeywordInterface> {
         private String keyword;
         private int count;
@@ -7761,7 +7769,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         }
     }
 
-    // Collects all the keywords into a list.
+    /** Collects all the keywords into a list. */
     private static final class ListKeywordVisitor implements Visitor<KeywordInterface> {
         private List<KeywordInterface> keywords = Lists.newArrayList();
 
@@ -8034,6 +8042,7 @@ public class Card extends GameEntity implements Comparable<Card>, IHasSVars, ITr
         }
         return result;
     }
+    /** Can block any number of creatures. */
     public boolean canBlockAny() {
         return !canBlockAny.isEmpty();
     }

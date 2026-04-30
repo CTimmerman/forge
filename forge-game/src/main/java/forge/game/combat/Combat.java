@@ -60,9 +60,9 @@ public class Combat {
     private final Player playerWhoAttacks;
     private boolean legacyOrderCombatants;
     private AttackConstraints attackConstraints;
-    // Defenders, as they are attacked by hostile forces
+    /** Defenders, as they are attacked by hostile forces */
     private final Supplier<FCollection<GameEntity>> attackableEntries = Suppliers.memoize(FCollection::new);
-    // Keyed by attackable defender (player or planeswalker or battle)
+    /** Keyed by attackable defender (player or planeswalker or battle) */
     private final Supplier<Multimap<GameEntity, AttackingBand>> attackedByBands = Suppliers.memoize(() -> Multimaps.synchronizedMultimap(ArrayListMultimap.create()));
     private final Supplier<Multimap<AttackingBand, Card>> blockedBands = Suppliers.memoize(() -> Multimaps.synchronizedMultimap(ArrayListMultimap.create()));
     private final Supplier<Map<Card, CardCollection>> attackersOrderedForDamageAssignment = Suppliers.memoize(Maps::newHashMap);
@@ -70,7 +70,7 @@ public class Combat {
     private final Supplier<CardCollection> lkiCache = Suppliers.memoize(CardCollection::new);
     private final Supplier<CardDamageMap> damageMap = Suppliers.memoize(CardDamageMap::new);
 
-    // List holds creatures who have dealt 1st strike damage to disallow them deal damage on regular basis (unless they have double-strike KW)
+    /** List holds creatures who have dealt 1st strike damage to disallow them deal damage on regular basis (unless they have double-strike KW) */
     private final Supplier<CardCollection> combatantsThatDealtFirstStrikeDamage = Suppliers.memoize(CardCollection::new);
 
     public Combat(final Player attacker) {
@@ -195,7 +195,7 @@ public class Combat {
         return attackableEntries.get();
     }
 
-    //gets attacked player opponents (ignores planeswalkers)
+    /** Gets attacked player opponents. (ignores planeswalkers) */
     public final FCollection<Player> getAttackedOpponents(Player atk) {
         FCollection<Player> attackedOpps = new FCollection<>();
         if (atk == playerWhoAttacks) {
@@ -306,7 +306,7 @@ public class Combat {
         return null;
     }
 
-    // takes LKI into consideration, should use it at all times (though a single iteration over multimap seems faster)
+    /** Takes LKI into consideration, should use it at all times (though a single iteration over multimap seems faster). */
     public final AttackingBand getBandOfAttacker(final Card c) {
         if (c == null) {
             return null;
@@ -367,7 +367,7 @@ public class Combat {
         return band != null && Boolean.TRUE.equals(band.isBlocked());
     }
 
-    // Some cards in Alpha may UNBLOCK an attacker, so second parameter is not always-true
+    /** Some cards in Alpha may UNBLOCK an attacker, so second parameter is not always-true. */
     public final void setBlocked(final Card attacker, boolean value) {
         getBandOfAttackerNotNull(attacker).setBlocked(value); // called by Curtain of Light, Dazzling Beauty, Trap Runner
     }
@@ -382,7 +382,7 @@ public class Combat {
         blocker.updateBlockingForView();
     }
 
-    // remove blocker from specific attacker
+    /** Removes blocker from specific attacker. */
     public final void removeBlockAssignment(final Card attacker, final Card blocker) {
         AttackingBand band = getBandOfAttackerNotNull(attacker);
         Collection<Card> cc = blockedBands.get().get(band);
@@ -392,7 +392,7 @@ public class Combat {
         blocker.updateBlockingForView();
     }
 
-    // remove blocker from everywhere
+    /** Removes blocker from everywhere. */
     public final void undoBlockingAssignment(final Card blocker) {
         CardCollection toRemove = new CardCollection(blocker);
         blockedBands.get().values().removeAll(toRemove);
@@ -556,7 +556,9 @@ public class Combat {
         attackersOrderedForDamageAssignment.get().put(blocker, orderedAttacker);
     }
 
-    // removes references to this attacker from all indices and orders
+    /**
+     * Removes references to this attacker from all indices and orders.
+     */
     public void unregisterAttacker(final Card c, AttackingBand ab) {
         blockersOrderedForDamageAssignment.get().remove(c);
 
@@ -589,7 +591,7 @@ public class Combat {
         }
     }
 
-    // removes references to this defender from all indices and orders
+    /** Removes references to this defender from all indices and orders. */
     public void unregisterDefender(final Card c, AttackingBand bandBeingBlocked) {
         attackersOrderedForDamageAssignment.get().remove(c);
         for (Card atk : bandBeingBlocked.getAttackers()) {
@@ -599,7 +601,7 @@ public class Combat {
         }
     }
 
-    // remove a combatant whose side is unknown
+    /** Remove a combatant whose side is unknown. */
     public final void removeFromCombat(final Card c) {
         AttackingBand ab = getBandOfAttacker(c);
         if (ab != null) {
@@ -670,7 +672,7 @@ public class Combat {
         return true;
     }
 
-    // Call this method right after turn-based action of declare blockers has been performed
+    /** Call this method right after turn-based action of declare blockers has been performed. */
     public final void fireTriggersForUnblockedAttackers(final Game game) {
         boolean bFlag = false;
         List<GameEntity> defenders = Lists.newArrayList();
@@ -703,8 +705,8 @@ public class Combat {
         }
     }
 
+    /** Assigns damage by Blockers. */
     private boolean assignBlockersDamage(boolean firstStrikeDamage) {
-        // Assign damage by Blockers
         final CardCollection blockers = getAllBlockers();
         boolean assignedDamage = false;
 
@@ -759,8 +761,8 @@ public class Combat {
         return assignedDamage;
     }
 
+    /** Assigns damage by Attackers. */
     private boolean assignAttackersDamage(boolean firstStrikeDamage) {
-        // Assign damage by Attackers
         CardCollection orderedBlockers = null;
         final CardCollection attackers = getAttackers();
         boolean assignedDamage = false;
@@ -998,6 +1000,10 @@ public class Combat {
         return null != lki && !lki.isAttacker && lki.relatedBands.contains(ab); // was blocking that very band
     }
 
+    /** 
+     * Saves last known information, so damage is still known to be from
+     * for example Ember Hauler as when it was still on the battlefield.
+     */
     public CombatLki saveLKI(Card lki) {
         if (!lki.isLKI()) {
             lki = CardCopyService.getLKICopy(lki);

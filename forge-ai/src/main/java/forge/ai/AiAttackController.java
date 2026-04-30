@@ -30,7 +30,6 @@ import forge.game.combat.Combat;
 import forge.game.combat.CombatUtil;
 import forge.game.combat.GlobalAttackRestrictions;
 import forge.game.cost.Cost;
-import forge.game.cost.CostTap;
 import forge.game.keyword.Keyword;
 import forge.game.keyword.KeywordInterface;
 import forge.game.player.Player;
@@ -59,41 +58,42 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
- * <p>
- * ComputerUtil_Attack2 class.
- * </p>
+ * AiAttackController determines attackers.
  *
  * @author Forge
  * @version $Id$
  */
 public class AiAttackController {
 
-    // possible attackers and blockers
+    /** Possible attackers. */
     private List<Card> attackers;
+    /** Possible blockers. */
     private List<Card> blockers;
 
-    private List<Card> oppList; // holds human player creatures
-    private List<Card> myList; // holds computer creatures
+    /** Holds human player creatures. */
+    private List<Card> oppList; 
+    /** Holds computer creatures. */
+    private List<Card> myList;
 
     private final Player ai;
     private Player defendingOpponent;
 
-    private int aiAggression = 0; // how aggressive the ai is attack will be depending on circumstances
-    private final boolean nextTurn; // include creature that can only attack/block next turn
+    /** How aggressive the AI attack is will be depending on circumstances. */
+    private int aiAggression = 0;
+    /** Include creature that can only attack/block next turn. */
+    private final boolean nextTurn;
     private final int timeOut;
     private final boolean canUseTimeout;
     private List<CompletableFuture<Integer>> futures = new ArrayList<>();
 
     /**
-     * <p>
-     * Constructor for ComputerUtil_Attack2.
-     * </p>
-     *
+     * How player AI will attack this turn.
      */
     public AiAttackController(final Player ai) {
         this(ai, false);
-    } // constructor
+    }
 
+    /** Overloaded constructor to evaluate attackers that should attack next turn. */
     public AiAttackController(final Player ai, boolean nextTurn) {
         this.ai = ai;
         defendingOpponent = choosePreferredDefenderPlayer(ai, true);
@@ -102,8 +102,9 @@ public class AiAttackController {
         refreshCombatants(defendingOpponent);
         this.timeOut = ai.getGame().getAITimeout();
         this.canUseTimeout = ai.getGame().canUseTimeout();
-    } // overloaded constructor to evaluate attackers that should attack next turn
+    }
 
+    /** Overloaded constructor to evaluate single specified attacker. */
     public AiAttackController(final Player ai, Card attacker) {
         this.ai = ai;
         defendingOpponent = choosePreferredDefenderPlayer(ai, true);
@@ -117,8 +118,12 @@ public class AiAttackController {
         this.blockers = getPossibleBlockers(oppList, this.attackers, this.nextTurn);
         this.timeOut = ai.getGame().getAITimeout();
         this.canUseTimeout = ai.getGame().canUseTimeout();
-    } // overloaded constructor to evaluate single specified attacker
+    }
 
+    /**
+    * Redetermines attackers and blockers.
+    * @param defender the defending player
+    */
     private void refreshCombatants(GameEntity defender) {
         if (defender instanceof Card card && card.isBattle()) {
             this.oppList = getOpponentCreatures(card.getProtectingPlayer());
@@ -188,6 +193,12 @@ public class AiAttackController {
         this.blockers.remove(blocker);
     }
 
+    /**
+    * Checks whether attacker can attack.
+    * @param attacker
+    * @param defender
+    * @return boolean can attack
+    */
     private boolean canAttackWrapper(final Card attacker, final GameEntity defender) {
         if (nextTurn) {
             return CombatUtil.canAttackNextTurn(attacker, defender);
@@ -239,10 +250,7 @@ public class AiAttackController {
     }
 
     /**
-     * <p>
-     * sortAttackers.
-     * </p>
-     *
+     * Sorts attackers by importance.
      */
     public final static List<Card> sortAttackers(final List<Card> in) {
         final List<Card> result = new ArrayList<>();
@@ -266,17 +274,13 @@ public class AiAttackController {
         return result;
     }
 
-    // Is there any reward for attacking? (for 0/1 creatures there is not)
     /**
-     * <p>
-     * isEffectiveAttacker.
-     * </p>
-     *
-     * @param attacker
-     *            a {@link forge.game.card.Card} object.
-     * @param combat
-     *            a {@link forge.game.combat.Combat} object.
-     * @return a boolean.
+     * Checks if any reward for attacking.
+     * @param ai
+     * @param attacker {@link forge.game.card.Card} object.
+     * @param combat {@link forge.game.combat.Combat} object.
+     * @param defender
+     * @return boolean
      */
     public final boolean isEffectiveAttacker(final Player ai, final Card attacker, final Combat combat, final GameEntity defender) {
         // if the attacker will die when attacking don't attack
@@ -302,6 +306,7 @@ public class AiAttackController {
                 return true;
             }
         }
+
         // Poison opponent if unblocked
         if (defender instanceof Player player
                 && ComputerUtilCombat.poisonIfUnblocked(attacker, player) > 0) {
@@ -315,6 +320,7 @@ public class AiAttackController {
             return true;
         }
 
+        // TODO Battlefield and command zone are already checked in predictPowerBonusOfAttacker via ComputerUtilCombat.damageIfUnblocked
         final CardCollectionView controlledByCompy = ai.getCardsIn(ZoneType.STATIC_ABILITIES_SOURCE_ZONES);
         for (final Card c : controlledByCompy) {
             for (final Trigger trigger : c.getTriggers()) {
@@ -334,6 +340,9 @@ public class AiAttackController {
         return getCardCanBlockAnAttacker(c, attackers, nextTurn) != null;
     }
 
+    /**
+     * @return null or card attacker that card c can block.
+     */
     public final static Card getCardCanBlockAnAttacker(final Card c, final List<Card> attackers, final boolean nextTurn) {
         final List<Card> attackerList = new ArrayList<>(attackers);
         if (!c.isCreature()) {
@@ -347,7 +356,9 @@ public class AiAttackController {
         return null;
     }
 
-    // this checks to make sure that the computer player doesn't lose when the human player attacks
+    /**
+     * Checks to make sure that the computer player doesn't lose when the human player attacks.
+     */
     public final List<Card> notNeededAsBlockers(final List<Card> currentAttackers, final List<Card> potentialAttackers) {
         // check for time walks
         if (ai.getGame().getPhaseHandler().getNextTurn().equals(ai)) {
@@ -580,6 +591,9 @@ public class AiAttackController {
         }
     }
 
+    /**
+    * Checks if all-out or lethal attack against defendingOpponent.
+    */
     private boolean doAssault() {
         if (ai.cantWin()) {
             return false;
@@ -804,11 +818,9 @@ public class AiAttackController {
     final boolean LOG_AI_ATTACKS = false;
 
     /**
-     * <p>
-     * Getter for the field <code>attackers</code>.
-     * </p>
-     *
-     * @return a {@link forge.game.combat.Combat} object.
+     * Sets and/or filters attackers. Sets and returns aiAggression used by shouldAttack.
+     * @param combat modified in place
+     * @return int aiAggression
      */
     public final int declareAttackers(final Combat combat) {
         // something prevents attacking, try another
@@ -822,7 +834,7 @@ public class AiAttackController {
         // TODO ideally requirements and attackMax are calculated first. so AI knows which attackers can't contribute
         final boolean bAssault = doAssault();
 
-        // Determine who will be attacked
+        // Player, Planeswalker, or Battle.
         GameEntity defender = chooseDefender(combat, bAssault);
 
         // decided to attack another defender so related lists need to be updated
@@ -1004,7 +1016,7 @@ public class AiAttackController {
             }
         }
 
-        // Exalted
+        // Exalted: If bonus is high enough, attack with only one creature.
         if (combat.getAttackers().isEmpty()) {
             boolean exalted = countExaltedBonus(ai) > 2;
 
@@ -1070,7 +1082,7 @@ public class AiAttackController {
         int computerForces = 0;
         int humanForces = 0;
         int humanForcesForAttritionalAttack = 0;
-
+    
         // examine the potential forces
         final List<Card> nextTurnAttackers = new ArrayList<>();
         int candidateCounterAttackDamage = 0;
@@ -1113,10 +1125,10 @@ public class AiAttackController {
                     }
                     canBoostPower = cost.canPay(nma, ai, true);
                     if (canBoostPower) {
-                        break;
-                    }
+                    break;
                 }
             }
+        }
 
             if (ComputerUtilCombat.canAttackNextTurn(pCard)
                 && (pCard.getNetCombatDamage() > 0
@@ -1493,17 +1505,11 @@ public class AiAttackController {
     }
 
     /**
-     * <p>
-     * shouldAttack.
-     * </p>
-     *
-     * @param attacker
-     *            a {@link forge.game.card.Card} object.
-     * @param defenders
-     *            a object.
-     * @param combat
-     *            a {@link forge.game.combat.Combat} object.
-     * @return a boolean.
+     * Checks if card should attack. Uses aiAggression.
+     * @param attacker {@link forge.game.card.Card} object.
+     * @param defenders object.
+     * @param combat {@link forge.game.combat.Combat} object.
+     * @return boolean.
      */
     public final boolean shouldAttack(final Card attacker, final List<Card> defenders, final Combat combat, final GameEntity defender) {
         // Is it a creature that has a more valuable ability with a tap cost than what it can do by attacking?
@@ -1526,7 +1532,7 @@ public class AiAttackController {
                 }
             }
         }
-
+        
         if (!isEffectiveAttacker(ai, attacker, combat, defender)) {
             return false;
         }
@@ -1689,7 +1695,7 @@ public class AiAttackController {
     }
 
     /**
-     * Find a protection type that will make an attacker unblockable.
+     * Finds a protection type that will make an attacker unblockable.
      * @param sa ability belonging to ApiType.Protection
      * @return colour string or "artifacts", null if no possible choice exists
      */
