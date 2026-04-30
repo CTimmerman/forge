@@ -7,8 +7,8 @@ import java.util.Set;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
-
 import com.google.common.collect.Multimap;
+
 import forge.card.CardStateName;
 import forge.game.Game;
 import forge.game.GameActionUtil;
@@ -338,6 +338,9 @@ public class ComputerUtilAbility {
             return b1 - a1;
         }
 
+        /**
+         * Handles activated abilities.
+         */
         private static int getSpellAbilityPriority(SpellAbility sa) {
             int p = 0;
             Card source = sa.getHostCard();
