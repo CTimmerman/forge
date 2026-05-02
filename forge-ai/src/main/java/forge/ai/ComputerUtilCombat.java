@@ -688,6 +688,15 @@ public class ComputerUtilCombat {
 
         TriggerType mode = trigger.getMode();
         if (mode == TriggerType.Attacks) {
+            if (combat != null && trigger.isKeyword(Keyword.EXALTED)) {
+                // Stop opponent's Exalted power bonus.
+                if (attacker.getController() != trigger.getHostCard().getController()) {
+                    return false;
+                }
+                if (!combat.getAttackers().isEmpty() && !combat.getAttackers().contains(attacker)) {
+                    return false;
+                }
+            }
             willTrigger = true;
             if (combat.isAttacking(attacker)) {
                 return false; // The trigger should have triggered already
@@ -1121,13 +1130,6 @@ public class ComputerUtilCombat {
 
             if (!combatTriggerWillTrigger(attacker, blocker, trigger, combat)) {
                 continue;
-            }
-
-            // Extra check for the Exalted trigger in case we're declaring more than one attacker
-            if (combat != null && trigger.isKeyword(Keyword.EXALTED)) {
-                if (!combat.getAttackers().isEmpty() && !combat.getAttackers().contains(attacker)) {
-                    continue;
-                }
             }
 
             SpellAbility sa = trigger.ensureAbility();
