@@ -2200,6 +2200,7 @@ public class AiController {
         }
     }
 
+    /** Orders triggers. */
     public List<SpellAbility> orderPlaySa(List<SpellAbility> activePlayerSAs) {
         // list is only one or empty, no need to filter
         if (activePlayerSAs.size() < 2) {
@@ -2220,7 +2221,7 @@ public class AiController {
         List<SpellAbility> token = filterListByApi(activePlayerSAs, ApiType.Token);
         List<SpellAbility> pump = filterListByApi(activePlayerSAs, ApiType.Pump);
         List<SpellAbility> pumpAll = filterListByApi(activePlayerSAs, ApiType.PumpAll);
-
+        // leftover SAs resolve last
         List<SpellAbility> result = Lists.newArrayList(activePlayerSAs);
 
         // do mandatory discard early if hand is empty or has DiscardMe card
@@ -2241,7 +2242,7 @@ public class AiController {
         // do Evolve Trigger before other PutCounter SpellAbilities
         result.addAll(evolve);
 
-        // token should be added first so they might get the pump bonus
+        // Token should resolve first so they might get the pump bonus. Too bad Mobilize X.
         result.addAll(pumpAll);
         result.addAll(pump);
         result.addAll(token);
