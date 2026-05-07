@@ -987,18 +987,25 @@ public class AiAttackController {
         }
 
         if (bAssault && defender == defendingOpponent) { // in case we are forced to attack someone else
-            if (LOG_AI_ATTACKS)
-                System.out.println("Assault");
             List<Card> left = new ArrayList<>(attackersLeft);
             CardLists.sortByPowerDesc(left);
             boolean bLifeInDanger = ComputerUtil.aiLifeInDanger(ai, false, 0);
+            int numOpps = ai.getOpponents().size();
+            if (LOG_AI_ATTACKS) {
+                System.out.println("Assault " + defender + " with " + left);
+            }
             for (Card attacker : left) {
-                if (attackMax != null && combat.getAttackers().size() >= attackMax)
+                if (attackMax != null && combat.getAttackers().size() >= attackMax) {
                     return aiAggression;
-
-                if (canAttackWrapper(attacker, defender) && isEffectiveAttacker(ai, attacker, combat, defender)) {
+                }
+                // canAttackWrapper(attacker, defender) was already applied in refreshCombatants
+                if (isEffectiveAttacker(ai, attacker, combat, defender)) {
                     // hold back some (especially in multiplayer)
-                    if (!bLifeInDanger || MyRandom.percentTrue((int)(chanceToAttackToTrade / ai.getOpponents().size()))) combat.addAttacker(attacker, defender);
+                    if (!bLifeInDanger || MyRandom.percentTrue((int)(50 + chanceToAttackToTrade / numOpps))) {
+                        combat.addAttacker(attacker, defender);
+                    } else if (LOG_AI_ATTACKS) {
+                        System.out.println("Holding back " + attacker);
+                    }
                 }
             }
             // no more creatures to attack
